@@ -6,21 +6,10 @@
 #include <GLUT/glut.h>
 #include <math.h>
 #include <SOIL/SOIL.h>
-#include "player.h"
 #include "objloader.h"
 #include "bmploader.h"
 
-typedef struct {
-	char *map;
-	int width;
-	int height;
-	int stride;
-}Map;
-
-Player *player;
-char *map;
 Data *model;
-Data *gun;
 GLuint stuff_texture;
 // float angle1 = 0;
 // float angle = 0;
