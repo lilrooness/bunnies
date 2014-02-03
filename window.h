@@ -2,10 +2,13 @@
 #define WINDOW_H
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <GLUT/glut.h>
 #include <math.h>
+#include <SOIL/SOIL.h>
 #include "player.h"
 #include "objloader.h"
+#include "bmploader.h"
 
 typedef struct {
 	char *map;
@@ -17,6 +20,9 @@ typedef struct {
 Player *player;
 char *map;
 Data *model;
+Data *gun;
+GLuint stuff_texture;
+// float angle1 = 0;
 // float angle = 0;
 
 void reshape(int width, int height);
@@ -26,5 +32,6 @@ void update_game();
 void init_glut(int argc, char **argv, int window_width, int window_height, char* title);
 void keyboard_down(unsigned char key, int x, int y);
 void keyboard_up(unsigned char key, int x, int y);
+void drawGround();
 
 #endif

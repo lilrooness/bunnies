@@ -13,28 +13,42 @@ void reshape(int width, int height) {
 void render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
+
     gluLookAt(player->xpos, 1, player->ypos,//eye position
               player->xpos+player->xdir*10, 1, player->ypos+player->ydir*10,//look at
               0.0, 1.0, 0.0);//up vector
 
+    drawGround();
+
     glPushMatrix();
-        glScalef(5, 5, 5);
-        glEnableClientState(GL_VERTEX_ARRAY);
+        render_vbo(model);
+    glPopMatrix();
 
-            glBindBuffer(GL_ARRAY_BUFFER, model->vboid);
-            glVertexPointer(3, GL_FLOAT, 0, 0);
-
-        glEnableClientState(GL_ELEMENT_ARRAY_BUFFER);
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->iboid);
-            glDrawElements(GL_TRIANGLES, model->faces*3, GL_UNSIGNED_INT, 0);
-
-        glDisableClientState(GL_VERTEX_ARRAY);
-        glDisableClientState(GL_ELEMENT_ARRAY_BUFFER);
-        glEnd();
+    glPushMatrix();
+        glTranslatef(player->xpos, -0.4f, player->ypos);
+        glRotatef(-90, 1, 0, 0);
+        
+        glRotatef(player->angle * -57.3f + 176, 0, 0, 1.0f);//really hacky way of doing gun rotation.
+        glScalef(0.1f, 0.1f, 0.1f);
+        render_vbo(gun);
     glPopMatrix();
 
     glutSwapBuffers();
     update_game();
+}
+
+void drawGround() {
+    // glEnable(GL_TEXTURE_2D);
+    // glBindTexture(GL_TEXTURE_2D, stuff_texture);
+    glColor3f(255, 0, 0);
+    glBegin(GL_QUADS);
+        glVertex3f(-100, -3, -100);
+        glVertex3f(100, -3, -100);
+        glVertex3f(100, -3, 100);
+        glVertex3f(-100, -3, 100);
+    glEnd();
+    glColor3f(255, 255, 255);
+    // glDisable(GL_TEXTURE_2D);
 }
 
 void init_glut(int argc, char **argv, int window_width, int window_height, char* title){
@@ -52,6 +66,7 @@ void init_glut(int argc, char **argv, int window_width, int window_height, char*
 
 void setup_game() {
     model = (Data*)malloc(sizeof(Data));
+    gun = (Data*)malloc(sizeof(Data));
     player = (Player*)malloc(sizeof(Player));
     map = (char*)malloc(sizeof(char) * 100);
     player->xpos = 0.0f;
@@ -63,9 +78,17 @@ void setup_game() {
     player->lft = 0;
     player->rt = 0;
     player->turnspeed = 0.01;
-    player->angle = 0;
+    player->angle = 10;
 
-    load_obj(model, "res/bunny.obj.txt", 4968, 2503);
+    load_obj(model, "res/bunnyn.obj", 4968, 2503, 0);
+    load_obj(gun, "res/gun.obj",7251/3 , 7251, 1);
+
+    stuff_texture = SOIL_load_OGL_texture("res/texture.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+    glBindTexture(GL_TEXTURE_2D, stuff_texture);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+
+    build_vbo(gun);
     build_vbo(model);
 }
 
@@ -76,11 +99,6 @@ void keyboard_down(unsigned char key, int x, int y){
         case 'a':{ player->lft = true;}break;
         case 's':{ player->bck = true;}break;
         case 'd':{ player->rt = true;}break;
-        //environment controls
-        // case 'f':{toggle(FOG);}break;
-        // case 'l':{toggle(LIGHTING);}break;
-        // case 'c':{toggle(COLLISION);}break;
-        // case 't':{toggle(SOLID);}break;
     }
 }
 
@@ -112,4 +130,6 @@ void update_game() {
         player->xdir = (float)sin(player->angle);
         player->ydir = -(float)cos(player->angle);
     }
+    player->xdir = (float)sin(player->angle);
+    player->ydir = -(float)cos(player->angle);
 }
