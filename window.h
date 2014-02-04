@@ -9,8 +9,10 @@
 #include "objloader.h"
 #include "bmploader.h"
 
-Data *model;
-GLuint stuff_texture;
+Data *bunny;
+GLuint sky;
+GLuint grass;
+
 // float angle1 = 0;
 // float angle = 0;
 
@@ -22,5 +24,6 @@ void init_glut(int argc, char **argv, int window_width, int window_height, char*
 void keyboard_down(unsigned char key, int x, int y);
 void keyboard_up(unsigned char key, int x, int y);
 void drawGround();
+void skybox();
 
 #endif

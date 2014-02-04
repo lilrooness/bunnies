@@ -1,8 +1,8 @@
 CC = gcc
 CFLAGS = -framework OpenGL -framework GLUT -lSOIL
 
-demo: window.o main.o objloader.o bmploader.o
-	$(CC) $(CFLAGS) -o bin/demo window.o objloader.o main.o bmploader.o
+demo: window.o main.o objloader.o
+	$(CC) $(CFLAGS) -o bin/demo window.o objloader.o main.o
 
 window.o: window.h window.c
 	$(CC) $(CFLAGS) -c window.c
@@ -16,5 +16,5 @@ main.o: main.c
 objloader.o: objloader.c
 	$(CC) $(CFLAGS) -c objloader.c
 
-bmploader.o: bmploader.c
-	$(CC) $(CFLAGS) -c bmploader.c
+# bmploader.o: bmploader.c
+# 	$(CC) $(CFLAGS) -c bmploader.c
