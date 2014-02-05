@@ -55,6 +55,7 @@ int load_obj(Data *data ,const char *filename, int faces, int vertecies, int tex
 					data->indiceslist[indicescursor++] = f1 - 1;
 					data->indiceslist[indicescursor++] = f2 - 1;
 					data->indiceslist[indicescursor++] = f3 - 1;
+					
 					//TODO TEXTURE INDICIES
 					data->normalindeces[normalindicescursor++] = n1 - 1;
 					data->normalindeces[normalindicescursor++] = n2 - 1;
