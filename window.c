@@ -17,13 +17,19 @@ void render() {
     glLoadIdentity();
 
     gluLookAt(0, 0, 10,
-              camx, camy, 0,
+              // camx, camy, 0,
+              0, 0, 0,
               0, 1, 0);
-    skybox();
+    // skybox();
     // render_vbo(bunny);
 
     drawTeapot(current_target.x, current_target.y);
     updatecameraposition();
+    updateparticlesystem(particle_system);
+
+    glColor3f(255, 0, 0);
+    rendersystem(particle_system);
+    glColor3f(255, 255, 255);
 
     glutSwapBuffers();
     update_game();
@@ -104,13 +110,15 @@ void setup_game() {
 
     sky = SOIL_load_OGL_texture("res/skybox.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
     glBindTexture(GL_TEXTURE_2D, sky);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     grass = SOIL_load_OGL_texture("res/grass.jpeg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
     glBindTexture(GL_TEXTURE_2D, sky);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    particle_system = initpsystem(30, 0.0f, 0.0f, 0);
 }
 
 // void keyboard_down(unsigned char key, int x, int y){
@@ -151,12 +159,4 @@ void updatecameraposition() {
 
 float dist(float x1, float x2, float y1, float y2) {
     return sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2));
-}
-
-float randomfloat() {
-    return (float)rand() / (float)RAND_MAX;
-}
-
-void update_game() {
-
 }

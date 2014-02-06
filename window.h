@@ -10,10 +10,12 @@
 #include "particle.h"
 #include "objloader.h"
 #include "bmploader.h"
+#include "particle.h"
 
 Data *bunny;
 GLuint sky;
 GLuint grass;
+psystem *particle_system;
 
 typedef struct {
 	float x, y;

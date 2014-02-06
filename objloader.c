@@ -9,8 +9,8 @@ int load_obj(Data *data ,const char *filename, int faces, int vertecies, int tex
 	data->faces = faces;
 	data->vertexlist = (float*)malloc(sizeof(float) * data->vertices*3);
 	data->normallist = (float*)malloc(sizeof(float) * data->vertices*3);
-	data->indiceslist = (int*)malloc(sizeof(int)*data->faces*3);
-	data->normalindeces = (int*)malloc(sizeof(int)*data->faces*3);
+	data->indiceslist = (unsigned int*)malloc(sizeof(unsigned int)*data->faces*3);
+	data->normalindeces = (unsigned int*)malloc(sizeof(unsigned int)*data->faces*3);
 
 	FILE *fp = fopen(filename, "r");
 	float v1, v2, v3;//3 vertcies per line
@@ -78,19 +78,19 @@ void build_vbo(Data *data) {
 	glGenBuffers(1, data->vboid);
 	glGenBuffers(1, data->iboid);
 	
-	glBindBuffer(GL_ARRAY_BUFFER, data->vboid);
+	glBindBuffer(GL_ARRAY_BUFFER, (GLuint*)data->vboid);
 	glBufferData(GL_ARRAY_BUFFER, data->vertices*3*sizeof(float), data->vertexlist, GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data->iboid);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (GLuint*)data->iboid);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, data->faces*3*sizeof(int), data->indiceslist, GL_STATIC_DRAW);
 }
 
 void render_vbo(Data *data) {
 	glEnableClientState(GL_VERTEX_ARRAY);
-    	glBindBuffer(GL_ARRAY_BUFFER, data->vboid);
+    	glBindBuffer(GL_ARRAY_BUFFER, (GLuint*)data->vboid);
     	glVertexPointer(3, GL_FLOAT, 0, 0);
 
     glEnableClientState(GL_ELEMENT_ARRAY_BUFFER);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data->iboid);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (GLuint*)data->iboid);
     	glDrawElements(GL_TRIANGLES, data->faces*3, GL_UNSIGNED_INT, 0);
 
     glDisableClientState(GL_VERTEX_ARRAY);
