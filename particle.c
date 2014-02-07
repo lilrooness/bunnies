@@ -90,6 +90,7 @@ void rendersystem(psystem *particlesystem) {
 	glTranslatef(particlesystem->x, particlesystem->y, particlesystem->z);
 	int i;
 	for(i = 0; i < particlesystem->currentparticles; i++) {
+		glPointSize((float)(particlesystem->particles + i)->lifetime * 0.1f);
 		glPushMatrix();
 			glTranslatef((particlesystem->particles + i)->xpos,
 						 (particlesystem->particles + i)->ypos, 

@@ -17,22 +17,27 @@ void render() {
     glLoadIdentity();
 
     gluLookAt(0, 0, 10,
-              // camx, camy, 0,
-              0, 0, 0,
+              camx, camy, 0,
+              // 0, 0, 0,
               0, 1, 0);
-    // skybox();
+    skybox();
     // render_vbo(bunny);
 
     drawTeapot(current_target.x, current_target.y);
     updatecameraposition();
-    updateparticlesystem(particle_system);
 
     glColor3f(255, 0, 0);
-    rendersystem(particle_system);
+    
+    int i;
+    for(i=0; i<psystems; i++) {
+        updateparticlesystem(*(particle_systems + i));
+        rendersystem(*(particle_systems + (i)));
+    }
+
     glColor3f(255, 255, 255);
 
     glutSwapBuffers();
-    update_game();
+    // update_game();
 }
 
 void skybox() {
@@ -85,6 +90,7 @@ void init_glut(int argc, char **argv, int window_width, int window_height, char*
     glutIdleFunc(render);
     glutReshapeFunc(reshape);
     glutPassiveMotionFunc(mousecontroller);
+    glutMouseFunc(mouseclickcontroller);
     // glutKeyboardFunc(keyboard_down);
     // glutKeyboardUpFunc(keyboard_up);
 }
@@ -118,7 +124,7 @@ void setup_game() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    particle_system = initpsystem(30, 0.0f, 0.0f, 0);
+    particle_systems = (psystem**) malloc(sizeof(psystem*) * MAX_PSYSTEMS);
 }
 
 // void keyboard_down(unsigned char key, int x, int y){
@@ -143,6 +149,10 @@ void setup_game() {
 void mousecontroller(int x, int y) {
     mousex = x;
     mousey = y;
+}
+
+void mouseclickcontroller(int button, int state, int x, int y) {
+    *(particle_systems + (psystems++)) = initpsystem(30, camx, camy, 0);
 }
 
 void updatecameraposition() {

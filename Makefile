@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -framework OpenGL -framework GLUT -lSOIL -Wall -Wno-unused
+CFLAGS = -framework OpenGL -framework GLUT -lSOIL -Wall
 
 demo: window.o main.o objloader.o particle.o
 	$(CC) $(CFLAGS) -o bin/demo particle.o window.o objloader.o main.o;

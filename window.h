@@ -1,6 +1,8 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
+#define MAX_PSYSTEMS 10
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <GLUT/glut.h>
@@ -15,7 +17,9 @@
 Data *bunny;
 GLuint sky;
 GLuint grass;
-psystem *particle_system;
+
+int psystems;
+psystem **particle_systems;
 
 typedef struct {
 	float x, y;
@@ -41,5 +45,6 @@ float randomfloat();
 void mousecontroller(int x, int y);
 void updatecameraposition();
 float dist(float x1, float x2, float y1, float y2);
+void mouseclickcontroller(int button, int state, int x, int y);
 
 #endif
