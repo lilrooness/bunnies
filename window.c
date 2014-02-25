@@ -1,6 +1,7 @@
 #include "window.h"
 
 void reshape(int width, int height) {
+    glEnable(GL_DEPTH_TEST);
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
@@ -18,21 +19,31 @@ void render() {
 
     gluLookAt(0, 0, 10,
               camx, camy, 0,
-              // 0, 0, 0,
+              // 0, 0, 0,m
               0, 1, 0);
     skybox();
-    // render_vbo(bunny);
 
+    glUseProgram(shader_program);
     drawTeapot(current_target.x, current_target.y);
+    render_vbo(bunny);
+    glUseProgram(0);
+
+    char buffer[400];
+    int len = 400;
+    glGetInfoLogARB(shader_program, 400, &len, buffer);
+    printf("%s\n", buffer);
+
     updatecameraposition();
 
     glColor3f(255, 0, 0);
     
+    glDisable(GL_LIGHTING);
     int i;
     for(i=0; i<psystems; i++) {
         updateparticlesystem(*(particle_systems + i));
         rendersystem(*(particle_systems + (i)));
     }
+    glEnable(GL_LIGHTING);
 
     glColor3f(255, 255, 255);
 
@@ -93,6 +104,7 @@ void init_glut(int argc, char **argv, int window_width, int window_height, char*
     glutMouseFunc(mouseclickcontroller);
     // glutKeyboardFunc(keyboard_down);
     // glutKeyboardUpFunc(keyboard_up);
+    init_lighting();
 }
 
 void drawTeapot(float x, float y) {
@@ -108,7 +120,8 @@ void drawTeapot(float x, float y) {
 void setup_game() {
     srand(time(NULL));
     bunny = (Data*)malloc(sizeof(Data));
-    load_obj(bunny, "res/bunny.obj", 4968, 2503, 0);
+    load_obj(bunny, "res/meshlabbunnyn.obj", 2483, 1256, 0);
+
     build_vbo(bunny);
 
     current_target.x = randomfloat() * 10 - 5;
@@ -120,11 +133,13 @@ void setup_game() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     grass = SOIL_load_OGL_texture("res/grass.jpeg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
-    glBindTexture(GL_TEXTURE_2D, sky);
+    glBindTexture(GL_TEXTURE_2D, grass);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     particle_systems = (psystem**) malloc(sizeof(psystem*) * MAX_PSYSTEMS);
+
+    shader_program = load_shader("res/toon.frag", "res/toon.vert");
 }
 
 // void keyboard_down(unsigned char key, int x, int y){
@@ -170,3 +185,18 @@ void updatecameraposition() {
 float dist(float x1, float x2, float y1, float y2) {
     return sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2));
 }
+
+void init_lighting() {
+   GLfloat specular[] = {1.0, 1.0, 1.0, 1.0};
+   GLfloat shininess[] = {50.0};
+   GLfloat position[] = {10.0f, 10.0f, 10.0f, 0.0f};
+   glShadeModel(GL_SMOOTH);
+
+   glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
+   glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
+   glLightfv(GL_LIGHT0, GL_POSITION, position);
+
+   glEnable(GL_LIGHTING);
+   glEnable(GL_LIGHT0);
+}
+

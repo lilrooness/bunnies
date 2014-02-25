@@ -65,6 +65,7 @@ int load_obj(Data *data ,const char *filename, int faces, int vertecies, int tex
 		}
 	}
 	fclose(fp);
+	printf("Normals:%d\n", normalarraycursor);
 	return 0;//no error
 }
 
@@ -75,25 +76,37 @@ int delete_obj(Data *data) {
 void build_vbo(Data *data) {
 	data->vboid = malloc(sizeof(GLuint));
 	data->iboid = malloc(sizeof(GLuint));
+	data->nboid = malloc(sizeof(GLuint));
+
 	glGenBuffers(1, data->vboid);
 	glGenBuffers(1, data->iboid);
+	glGenBuffers(1, data->nboid);
 	
-	glBindBuffer(GL_ARRAY_BUFFER, (GLuint*)data->vboid);
+	glBindBuffer(GL_ARRAY_BUFFER, *(data->vboid));
 	glBufferData(GL_ARRAY_BUFFER, data->vertices*3*sizeof(float), data->vertexlist, GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (GLuint*)data->iboid);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(data->iboid));
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, data->faces*3*sizeof(int), data->indiceslist, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, *(data->nboid));
+	glBufferData(GL_ARRAY_BUFFER, data->vertices*3*sizeof(float), data->normallist, GL_STATIC_DRAW);
 }
 
 void render_vbo(Data *data) {
+	glEnableClientState(GL_NORMAL_ARRAY);
+		glBindBuffer(GL_ARRAY_BUFFER, *(data->nboid));
+		glNormalPointer(GL_FLOAT, 0, 0);
+
 	glEnableClientState(GL_VERTEX_ARRAY);
-    	glBindBuffer(GL_ARRAY_BUFFER, (GLuint*)data->vboid);
+    	glBindBuffer(GL_ARRAY_BUFFER, *(data->vboid));
     	glVertexPointer(3, GL_FLOAT, 0, 0);
 
     glEnableClientState(GL_ELEMENT_ARRAY_BUFFER);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (GLuint*)data->iboid);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(data->iboid));
     	glDrawElements(GL_TRIANGLES, data->faces*3, GL_UNSIGNED_INT, 0);
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_ELEMENT_ARRAY_BUFFER);
+    glDisableClientState(GL_NORMAL_ARRAY);
 }
 

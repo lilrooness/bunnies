@@ -15,6 +15,7 @@ typedef struct {
 	int faces;
 	GLuint *vboid;
 	GLuint *iboid;
+	GLuint *nboid;
 }Data;
 
 typedef struct {

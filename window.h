@@ -1,7 +1,7 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#define MAX_PSYSTEMS 10
+#define MAX_PSYSTEMS 1000
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -13,6 +13,7 @@
 #include "objloader.h"
 #include "bmploader.h"
 #include "particle.h"
+#include "shader.h"
 
 Data *bunny;
 GLuint sky;
@@ -31,6 +32,8 @@ int mousex, mousey;
 float camx, camy;
 target current_target;
 
+GLuint shader_program;
+
 void reshape(int width, int height);
 void render();
 void setup_game();
@@ -46,5 +49,6 @@ void mousecontroller(int x, int y);
 void updatecameraposition();
 float dist(float x1, float x2, float y1, float y2);
 void mouseclickcontroller(int button, int state, int x, int y);
+void init_lighting();
 
 #endif
