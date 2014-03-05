@@ -18,6 +18,7 @@
 Data *bunny;
 GLuint sky;
 GLuint grass;
+Data *bomb;
 
 int psystems;
 psystem **particle_systems;
@@ -26,6 +27,10 @@ typedef struct {
 	float x, y;
 }target;
 
+int score;
+int timeLeft;
+int started;
+
 // float angle1 = 0;
 float angle;
 int mousex, mousey;
@@ -33,6 +38,7 @@ float camx, camy;
 target current_target;
 
 GLuint shader_program;
+GLuint trans_shader_program;
 
 void reshape(int width, int height);
 void render();
@@ -50,5 +56,8 @@ void updatecameraposition();
 float dist(float x1, float x2, float y1, float y2);
 void mouseclickcontroller(int button, int state, int x, int y);
 void init_lighting();
+void print2DText(int x, int y, char *string, int len);
+void timerfunc(int value);
+
 
 #endif

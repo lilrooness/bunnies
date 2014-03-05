@@ -19,15 +19,16 @@ typedef struct {
 	particle *particles;
 	int maxparticles;
 	int currentparticles;
+	int lifetime;
 }psystem;
 
 void updateparticlesystem(psystem *particlesystem);
 
-void updateparticle(particle *p);
+void updateparticle(particle *p, int deadSystem);
 
 void applyforce(float x, float y, float z, particle *p);
 
-psystem* initpsystem(int max, float x, float y, float z);
+psystem* initpsystem(int max, float x, float y, float z, int lifetime);
 
 float randomfloat();
 

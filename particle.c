@@ -2,12 +2,14 @@
 
 void updateparticlesystem(psystem *particlesystem) {
 	int i;
-	for(i = 0; i < particlesystem->currentparticles; i++) {
-		updateparticle(particlesystem->particles+i);
-	}
+	// if(particlesystem->lifetime > 0) {
+		for(i = 0; i < particlesystem->currentparticles; i++) {
+			updateparticle(particlesystem->particles+i, particlesystem->lifetime--);
+		}
+	// }
 }
 
-void updateparticle(particle *p) {
+void updateparticle(particle *p, int deadSystem) {
 
 	//apply gravity
 	applyforce(0.0f, -0.001f, 0.0f, p);
@@ -24,7 +26,7 @@ void updateparticle(particle *p) {
 	p->yacc = 0.0f;
 	p->zacc = 0.0f;
 
-	if(p->lifetime < 0) {
+	if(p->lifetime < 0 && deadSystem > 0) {
 		p->lifetime = randomfloat() * 100;
 
 		p->xpos = 0;
@@ -51,12 +53,13 @@ void applyforce(float x, float y, float z, particle *p) {
 	p->zacc += y / p->mass;
 }
 
-psystem* initpsystem(int max, float x, float y, float z) {
+psystem* initpsystem(int max, float x, float y, float z, int lifetime) {
 
 	psystem *particlesystem = (psystem*) malloc(sizeof(psystem));
 	particlesystem->particles = (particle*) malloc(sizeof(particle) * max);
 	particlesystem->maxparticles = max;
 	particlesystem->currentparticles = max;
+	particlesystem->lifetime = lifetime;
 
 	particlesystem->x = x;
 	particlesystem->y = y;
@@ -64,9 +67,9 @@ psystem* initpsystem(int max, float x, float y, float z) {
 
 	int i;
 	for(i=0; i<particlesystem->currentparticles; i++) {
-		(particlesystem->particles + i)->xpos = x;
-		(particlesystem->particles + i)->ypos = y;
-		(particlesystem->particles + i)->zpos = z;
+		(particlesystem->particles + i)->xpos = 0.0f;
+		(particlesystem->particles + i)->ypos = 0.0f;
+		(particlesystem->particles + i)->zpos = 0.0f;
 
 		(particlesystem->particles + i)->xvel = 0.0f;
 		(particlesystem->particles + i)->yvel = 0.0f;
@@ -90,15 +93,20 @@ void rendersystem(psystem *particlesystem) {
 	glTranslatef(particlesystem->x, particlesystem->y, particlesystem->z);
 	int i;
 	for(i = 0; i < particlesystem->currentparticles; i++) {
-		glPointSize((float)(particlesystem->particles + i)->lifetime * 0.1f);
-		glPushMatrix();
+		if((particlesystem->particles+i)->lifetime > 0) {
+			glPointSize((float)(particlesystem->particles + i)->lifetime * 0.1f);
+			glPushMatrix();
 			glTranslatef((particlesystem->particles + i)->xpos,
 						 (particlesystem->particles + i)->ypos, 
 						 (particlesystem->particles + i)->zpos);
+			glColor3f(255, 
+					  1 - (particlesystem->particles + i)->lifetime / 100, 
+					  /* 1 - (particlesystem->particles + i)->lifetime / 100*/0);
 			glBegin(GL_POINTS);
 				glVertex3f(0, 0, 0);
 			glEnd();
 		glPopMatrix();
+		}
 	}
 	glPopMatrix();
 }
