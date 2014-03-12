@@ -58,6 +58,7 @@ void mouseclickcontroller(int button, int state, int x, int y);
 void init_lighting();
 void print2DText(int x, int y, char *string, int len);
 void timerfunc(int value);
+void updateGameFunc(int value);
 
 
 #endif

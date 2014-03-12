@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -framework OpenGL -framework GLUT -lSOIL -Wall
 
 demo: window.o main.o objloader.o particle.o shader.o
-	$(CC) $(CFLAGS) -o bin/demo shader.o particle.o window.o objloader.o main.o;
+	$(CC) $(CFLAGS) -o bin/game shader.o particle.o window.o objloader.o main.o;
 
 window.o: window.h window.c
 	$(CC) $(CFLAGS) -c window.c

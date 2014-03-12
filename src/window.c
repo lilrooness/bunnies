@@ -69,16 +69,13 @@ void render() {
         glColor3f(255, 0, 0);
         
         glDisable(GL_LIGHTING);
+        // glEnable(GL_LIGHTING);
         int i;
         for(i=0; i<psystems; i++) {
-            updateparticlesystem(*(particle_systems + i));
             rendersystem(*(particle_systems + (i)));
         }
-        // glEnable(GL_LIGHTING);
-    
+        
         glColor3f(255, 255, 255);
-    
-        updatecameraposition();
         
         char string[10];
         char timedisp[10];
@@ -173,6 +170,7 @@ void init_glut(int argc, char **argv, int window_width, int window_height, char*
     glutPassiveMotionFunc(mousecontroller);
     glutMouseFunc(mouseclickcontroller);
     glutTimerFunc(1000 ,timerfunc, 0);
+    glutTimerFunc(10, updateGameFunc, 0);
     // glutKeyboardFunc(keyboard_down);
     // glutKeyboardUpFunc(keyboard_up);
     init_lighting();
@@ -313,4 +311,13 @@ void timerfunc(int value) {
     timeLeft --;
     //call again in 1 second (registering the callback only calls it once)
     glutTimerFunc(1000 ,timerfunc, 0);
+}
+
+void updateGameFunc(int value) {
+    int i;
+    for(i=0; i<psystems; i++) {
+        updateparticlesystem(*(particle_systems + i));
+    }
+    updatecameraposition();
+    glutTimerFunc(10, updateGameFunc, 0);
 }
